@@ -1,1 +1,3 @@
-print("hello world from code")
+import pyshark
+cap = pyshark.FileCapture('capture.pcapng')
+print(cap[0])
