@@ -1,8 +1,12 @@
 import pyshark
 
+udp_packets = []
+
 def network_conversation(packet):
   try:
     protocol = packet.transport_layer
+    if (protocol == "UDP"):
+      udp_packets.append(packet)
     source_address = packet.ip.src
     source_port = packet[packet.transport_layer].srcport
     destination_address = packet.ip.dst
@@ -18,5 +22,6 @@ for packet in capture:
   if results != None:
     conversations.append(results)
 
-for item in sorted(conversations):
-  print (item)
+print("UDP PACKETS")
+for packet in udp_packets:
+  print(packet)
