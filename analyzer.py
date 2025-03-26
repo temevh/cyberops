@@ -1,12 +1,13 @@
 import pyshark
 
+#Packet to YAML/XML/JSON
+
 udp_packets = []
 tcp_packets = []
 
 def network_conversation(packet):
   try:
-    protocol = packet.transport_layer
-    print(protocol)
+    protocol = packet.transport_layer 
     if (protocol == "UDP"):
       udp_packets.append(packet)
     elif(protocol == "TCP"):
