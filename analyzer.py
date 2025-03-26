@@ -1,17 +1,22 @@
 import pyshark
 
 udp_packets = []
+tcp_packets = []
 
 def network_conversation(packet):
   try:
     protocol = packet.transport_layer
+    print(protocol)
     if (protocol == "UDP"):
       udp_packets.append(packet)
-    source_address = packet.ip.src
-    source_port = packet[packet.transport_layer].srcport
-    destination_address = packet.ip.dst
-    destination_port = packet[packet.transport_layer].dstport
-    return (f'{protocol} {source_address}:{source_port} --> {destination_address}:{destination_port}')
+    elif(protocol == "TCP"):
+      tcp_packets.append(packet)
+
+    #source_address = packet.ip.src
+    #source_port = packet[packet.transport_layer].srcport
+    #destination_address = packet.ip.dst
+    #destination_port = packet[packet.transport_layer].dstport
+    #return (f'{protocol} {source_address}:{source_port} --> {destination_address}:{destination_port}')
   except AttributeError as e:
     pass
 
@@ -22,6 +27,6 @@ for packet in capture:
   if results != None:
     conversations.append(results)
 
-print("UDP PACKETS")
-for packet in udp_packets:
-  print(packet)
+print("UDP PACKETS:", len(udp_packets))
+print("TCP PACKETS:", len(tcp_packets))
+print(udp_packets[0])
