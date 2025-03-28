@@ -1,33 +1,26 @@
 import pyshark
 
-#Packet to YAML/XML/JSON
+def analyze(file): 
+    capture = pyshark.FileCapture(file)
 
-udp_packets = []
-tcp_packets = []
+    udp_packets = []
+    tcp_packets = []
 
-def network_conversation(packet):
-  try:
-    protocol = packet.transport_layer 
-    if (protocol == "UDP"):
-      udp_packets.append(packet)
-    elif(protocol == "TCP"):
-      tcp_packets.append(packet)
+    for packet in capture:
+        try:
+            protocol = packet.transport_layer 
+            if protocol == "UDP":
+                udp_packets.append(packet)
+            elif protocol == "TCP":
+                tcp_packets.append(packet)
+        except AttributeError:
+            pass
 
-    #source_address = packet.ip.src
-    #source_port = packet[packet.transport_layer].srcport
-    #destination_address = packet.ip.dst
-    #destination_port = packet[packet.transport_layer].dstport
-    #return (f'{protocol} {source_address}:{source_port} --> {destination_address}:{destination_port}')
-  except AttributeError as e:
-    pass
+    analysis_results = {
+        "udp_count": len(udp_packets),
+        "tcp_count": len(tcp_packets),
+        "udp_packets": udp_packets,
+        "tcp_packets": tcp_packets
+    }
 
-capture = pyshark.FileCapture('capture.pcapng')
-conversations = []
-for packet in capture:
-  results = network_conversation(packet)
-  if results != None:
-    conversations.append(results)
-
-print("UDP PACKETS:", len(udp_packets))
-print("TCP PACKETS:", len(tcp_packets))
-print(udp_packets[0])
+    return analysis_results
