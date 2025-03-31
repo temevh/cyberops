@@ -19,8 +19,8 @@ def transport_packets(file):
     transport_packets_results = {
         "udp_count": len(udp_packets),
         "tcp_count": len(tcp_packets),
-        "udp_packets": udp_packets,
-        "tcp_packets": tcp_packets
+       # "udp_packets": udp_packets,
+       # "tcp_packets": tcp_packets
     }
 
     return transport_packets_results
