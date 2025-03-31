@@ -1,8 +1,6 @@
 import pyshark
 
-def transport_packets(file): 
-    capture = pyshark.FileCapture(file)
-
+def transport_packets(capture): 
     udp_packets = []
     tcp_packets = []
 
@@ -18,9 +16,20 @@ def transport_packets(file):
 
     transport_packets_results = {
         "udp_count": len(udp_packets),
-        "tcp_count": len(tcp_packets),
-       # "udp_packets": udp_packets,
-       # "tcp_packets": tcp_packets
+        "tcp_count": len(tcp_packets)
     }
 
     return transport_packets_results
+
+def ip_list(capture):
+    ip_addresses = set()
+
+    for packet in capture:
+        try:
+            if hasattr(packet, "ip"):
+                ip_addresses.add(packet.ip.src)
+                ip_addresses.add(packet.ip.dst)
+        except AttributeError:
+            pass
+
+    return list(ip_addresses)
