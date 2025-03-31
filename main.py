@@ -13,9 +13,13 @@ def readFile():
     filename = "capture.pcapng"
     capture = pyshark.FileCapture(filename)
 
+analysis_functions = {
+    "transport-layer packets": transport_packets,
+    "list IP's": ip_list
+}
+
 while True:
     options = ["read file", "analyze file", "save results", "quit"]
-    analysis_options = ["transport-layer packets", "list IP's"]
     selected_option = select_option(options)
 
     if selected_option == "read file":
@@ -26,26 +30,21 @@ while True:
         if filename == "":
             print("Read file first\n")
         else:
-            analysis_selection = select_option(analysis_options)
+            analysis_selection = select_option(list(analysis_functions.keys()))
+            if analysis_selection in analysis_functions:
+                result = analysis_functions[analysis_selection](capture)
+                print(result)
 
-            if analysis_selection == "transport-layer packets":
-                transport_analysis = transport_packets(capture)
-                print(transport_analysis)
-                if "transport_analysis" not in results:
-                    results["transport_analysis"] = transport_analysis
-
-            elif analysis_selection == "list IP's":
-                ip_results = ip_list(capture)
-                print(ip_results)
-                if "ip_list" not in results:
-                    results["ip_list"] = ip_results
+                if analysis_selection not in results:
+                    results[analysis_selection] = result
 
             input("Press enter to continue")
 
     elif selected_option == "save results":
         with open("results.txt", "w") as f:
             json.dump(results, f, indent=4)
-        print("Results saved successfully!")
+        print("Results saved successfully to results.txt!")
+        input("Press ENTER to continue")
 
     elif selected_option == "quit":
         print("Exiting program...")
