@@ -1,6 +1,6 @@
 import pyshark
 
-def analyze(file): 
+def transport_packets(file): 
     capture = pyshark.FileCapture(file)
 
     udp_packets = []
@@ -16,11 +16,11 @@ def analyze(file):
         except AttributeError:
             pass
 
-    analysis_results = {
+    transport_packets_results = {
         "udp_count": len(udp_packets),
         "tcp_count": len(tcp_packets),
         "udp_packets": udp_packets,
         "tcp_packets": tcp_packets
     }
 
-    return analysis_results
+    return transport_packets_results
