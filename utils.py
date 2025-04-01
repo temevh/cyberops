@@ -1,1 +1,2 @@
-#Results saving goes here
+def loading_bar():
+    return 0
