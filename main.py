@@ -19,7 +19,7 @@ analysis_functions = {
 }
 
 while True:
-    options = ["read file", "analyze file", "save results", "quit"]
+    options = ["read file", "analyze file", "save results", "debug", "quit"]
     selected_option = select_option(options)
 
     if selected_option == "read file":
@@ -33,12 +33,11 @@ while True:
             analysis_selection = select_option(list(analysis_functions.keys()))
             if analysis_selection in analysis_functions:
                 result = analysis_functions[analysis_selection](capture)
-                print(result)
 
                 if analysis_selection not in results:
                     results[analysis_selection] = result
 
-            input("Press enter to continue")
+            input("Press ENTER to continue")
 
     elif selected_option == "save results":
         with open("results.txt", "w") as f:
