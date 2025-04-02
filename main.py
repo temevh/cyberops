@@ -1,7 +1,8 @@
 import json
 import pyshark
 from selection import select_option
-from analyzer import transport_packets, ip_list
+from analyzer import transport_packets
+from ip_analyze import list_all_ips
 
 filename = ""
 results = {}
@@ -13,9 +14,23 @@ def readFile():
     filename = "capture.pcapng"
     capture = pyshark.FileCapture(filename)
 
+def show_ip_options(capture): #Too lazy to come up with a fix, pass the capture to avoid error
+    ip_options = list(ip_functions.keys()) + ["Back"]
+    ip_selection = select_option(ip_options)
+
+    if ip_selection in ip_functions and ip_selection:
+        result = ip_functions[ip_selection](capture)
+        results[ip_selection] = result
+        print(f"Analysis result for {ip_selection}:\n{result}")
+        input("Press ENTER to continue")
+
 analysis_functions = {
     "transport-layer packets": transport_packets,
-    "list IP's": ip_list
+    "IP analysis options": show_ip_options 
+}
+
+ip_functions = {
+    "list IP's": list_all_ips
 }
 
 while True:
@@ -34,10 +49,8 @@ while True:
             if analysis_selection in analysis_functions:
                 result = analysis_functions[analysis_selection](capture)
 
-                if analysis_selection not in results:
+                if result:
                     results[analysis_selection] = result
-
-            input("Press ENTER to continue")
 
     elif selected_option == "save results":
         with open("results.txt", "w") as f:
