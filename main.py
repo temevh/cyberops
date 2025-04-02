@@ -1,7 +1,7 @@
 import json
 import pyshark
 from selection import select_option
-from analyzer import transport_packets
+from transport_analysis import transport_packets
 from ip_analyze import list_all_ips
 
 filename = ""
@@ -34,7 +34,11 @@ ip_functions = {
 }
 
 while True:
-    options = ["read file", "analyze file", "save results", "debug", "quit"]
+    options = ["analyze file", "save results", "debug", "quit"]
+    if filename != "":
+        options[0] = f"current file {filename.upper()}"
+    else:
+        options[0] = "read file"
     selected_option = select_option(options)
 
     if selected_option == "read file":

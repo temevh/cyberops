@@ -17,13 +17,13 @@ def select_option(options):
     while True:
         key = msvcrt.getch()
 
-        if key == b"\xe0":  # Arrow key prefix
+        if key == b"\xe0":
             key = msvcrt.getch()
-            if key == b"H" and pointerIndex > 0:  # Up arrow
+            if key == b"H" and pointerIndex > 0:
                 pointerIndex -= 1
-            elif key == b"P" and pointerIndex < len(options) - 1:  # Down arrow
+            elif key == b"P" and pointerIndex < len(options) - 1:
                 pointerIndex += 1
-        elif key == b"\r":  # Enter key
+        elif key == b"\r":
             return options[pointerIndex]
 
         display_menu()
