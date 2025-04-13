@@ -6,19 +6,21 @@ from ip_analyze import list_all_ips
 
 filename = ""
 results = {}
+optionsdict = {"analyze file": 1, "save results": 1, "quit": 1}
+dynamic_options = {"read file": 1} 
 
 def readFile():
-    global filename 
-    global capture
-    # filename = input("File name: ")
+    global filename, capture, dynamic_options
     filename = "capture.pcapng"
     capture = pyshark.FileCapture(filename)
 
-def show_ip_options(capture): #Too lazy to come up with a fix, pass the capture to avoid error
+    dynamic_options = {f"Current file: {filename.upper()}": 1}
+
+def show_ip_options(capture):
     ip_options = list(ip_functions.keys()) + ["Back"]
     ip_selection = select_option(ip_options)
 
-    if ip_selection in ip_functions and ip_selection:
+    if ip_selection in ip_functions:
         result = ip_functions[ip_selection](capture)
         results[ip_selection] = result
         print(f"Analysis result for {ip_selection}:\n{result}")
@@ -26,7 +28,7 @@ def show_ip_options(capture): #Too lazy to come up with a fix, pass the capture 
 
 analysis_functions = {
     "transport-layer packets": transport_packets,
-    "IP analysis options": show_ip_options 
+    "IP analysis options": show_ip_options
 }
 
 ip_functions = {
@@ -34,16 +36,17 @@ ip_functions = {
 }
 
 while True:
-    options = ["analyze file", "save results", "debug", "quit"]
-    if filename != "":
-        options[0] = f"current file {filename.upper()}"
-    else:
-        options[0] = "read file"
-    selected_option = select_option(options)
+    # Merge dynamic options (file-related) and fixed options
+    new_options = {**dynamic_options, **optionsdict}
+
+    selected_option = select_option(new_options)
 
     if selected_option == "read file":
         readFile()
         print("Reading the file...\n")
+
+    elif selected_option == f"Current file: {filename.upper()}":
+        print(f"File {filename} is already loaded.")
 
     elif selected_option == "analyze file":
         if filename == "":
@@ -52,7 +55,6 @@ while True:
             analysis_selection = select_option(list(analysis_functions.keys()))
             if analysis_selection in analysis_functions:
                 result = analysis_functions[analysis_selection](capture)
-
                 if result:
                     results[analysis_selection] = result
 
